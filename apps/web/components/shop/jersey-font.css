@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'JerseyFormName';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/RobotoCondensed-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'JerseyFormNumber';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/Roboto-Black.ttf') format('truetype');
+}

@@ -1,0 +1,45 @@
+---
+description: PostgreSQL + Prisma conventions for this monorepo
+globs:
+  - packages/database/**
+  - apps/api/src/**/*.ts
+alwaysApply: false
+---
+
+# PostgreSQL & Prisma (ФК «Фаворит»)
+
+## Connection
+
+- **Primary DB**: Docker PostgreSQL (`favorit-postgres`) on `localhost:5432`
+- Connection: `postgresql://favorit:favorit@localhost:5432/favorit`
+- Migrate from local Postgres: `bash scripts/migrate-to-docker-postgres.sh`
+- Env: root `.env` and `packages/database/.env` (both need `DATABASE_URL`)
+
+## Commands (from repo root)
+
+```bash
+pnpm db:generate   # prisma generate
+pnpm db:push       # apply schema (dev, no migration files)
+pnpm db:migrate    # prisma migrate dev (preferred for tracked migrations)
+pnpm db:seed       # seed demo data
+pnpm db:studio     # Prisma Studio GUI
+```
+
+If `pnpm` is unavailable in shell, use:
+`packages/database/node_modules/.bin/prisma <command>`
+
+## Workflow rules
+
+1. Schema changes → edit `schema.prisma` → `pnpm db:migrate` (create migration) or `pnpm db:push` (quick dev sync)
+2. After schema change → `pnpm db:generate` before building API
+3. Never run `migrate reset` or `DROP DATABASE` without explicit user approval
+4. Seed is idempotent-safe only if seed script handles upserts — re-run with care on production
+5. Use `PrismaService` in NestJS modules, not raw `PrismaClient` instances
+
+## Relevant skills
+
+- `prisma-database-setup` — connection strings, troubleshooting
+- `prisma-client-api` — queries, relations, transactions
+- `prisma-cli` — migrate, push, studio commands
+- `postgres-best-practices` — indexes, query performance
+- `database-design` — schema design decisions

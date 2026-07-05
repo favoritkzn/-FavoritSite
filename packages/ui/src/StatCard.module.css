@@ -1,0 +1,49 @@
+.card {
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  margin-bottom: 8px;
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1F2937;
+  line-height: 1;
+}
+
+.trend {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trendUp {
+  color: #16A34A;
+}
+
+.trendDown {
+  color: #DC2626;
+}
+
+.trendNeutral {
+  color: #6B7280;
+}
+
+.icon {
+  margin-bottom: 12px;
+  color: #DC2626;
+}

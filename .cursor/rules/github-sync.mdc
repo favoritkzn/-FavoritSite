@@ -1,0 +1,14 @@
+---
+description: Синхронизация с GitHub после изменений в проекте
+alwaysApply: true
+---
+
+# GitHub Sync
+
+После завершения задачи с изменениями в коде:
+
+1. Убедись, что `.env` не попал в коммит
+2. Запусти `pnpm git:sync` или `bash scripts/git-sync.sh "краткое описание"`
+3. Если remote не настроен — скажи пользователю запустить `bash scripts/github-setup.sh`
+
+Не коммить секреты, `node_modules`, `.next`, `dist`.

@@ -1,0 +1,675 @@
+// Prisma schema — MVP scope
+// Full entity list: docs/MVP_SCOPE.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum UserRole {
+  PARENT
+  COACH
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  PENDING_VERIFICATION
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  SUBSCRIPTION
+  SHOP
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum TrialRegistrationStatus {
+  NEW
+  CONTACTED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum MatchEventType {
+  GOAL
+  ASSIST
+  YELLOW_CARD
+  RED_CARD
+  SUBSTITUTION
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  PAYMENT
+  SCHEDULE
+  ATTENDANCE
+  SYSTEM
+}
+
+enum TrainingSessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ParentRelation {
+  MOTHER
+  FATHER
+  GUARDIAN
+  OTHER
+}
+
+// ─── Auth & Users ────────────────────────────────────────
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  role      UserRole
+  status    UserStatus @default(PENDING_VERIFICATION)
+  firstName String
+  lastName  String
+  phone     String?
+  avatar    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  parent           Parent?
+  coach            Coach?
+  refreshTokens    RefreshToken[]
+  passwordResets   PasswordReset[]
+  payments         Payment[]
+  notifications    Notification[]
+  announcements    Announcement[]
+  auditLogs        AuditLog[]
+  markedAttendance Attendance[]   @relation("MarkedBy")
+  uploadedMedia    Media[]        @relation("UploadedBy")
+  cart             Cart?
+  orders           Order[]
+
+  @@index([role])
+  @@index([status])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+// ─── Profiles ────────────────────────────────────────────
+
+model Parent {
+  id      String  @id @default(cuid())
+  userId  String  @unique
+  address String?
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  children ParentChild[]
+
+  @@map("parents")
+}
+
+model Coach {
+  id         String  @id @default(cuid())
+  userId     String  @unique
+  bio        String?
+  experience String?
+  photo      String?
+  isPublic   Boolean @default(true)
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groups          GroupCoach[]
+  trainingSessions TrainingSession[]
+
+  @@map("coaches")
+}
+
+// ─── Children & Groups ───────────────────────────────────
+
+model Child {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String
+  birthDate   DateTime
+  gender      Gender
+  photo       String?
+  medicalInfo String?
+  jerseyNumber Int?     @unique
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  parents       ParentChild[]
+  groups        GroupChild[]
+  attendances   Attendance[]
+  subscriptions Subscription[]
+  matchEvents   MatchEvent[]
+  payments      Payment[]
+
+  @@index([lastName, firstName])
+  @@map("children")
+}
+
+model ParentChild {
+  id       String         @id @default(cuid())
+  parentId String
+  childId  String
+  relation ParentRelation @default(GUARDIAN)
+
+  parent Parent @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  child  Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, childId])
+  @@map("parent_children")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  ageCategory String
+  description String?
+  maxCapacity Int      @default(20)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  children         GroupChild[]
+  coaches          GroupCoach[]
+  trainingSessions TrainingSession[]
+  announcements    Announcement[]
+  mediaAlbums      MediaAlbum[]
+
+  @@map("groups")
+}
+
+model GroupChild {
+  id       String   @id @default(cuid())
+  groupId  String
+  childId  String
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, childId])
+  @@map("group_children")
+}
+
+model GroupCoach {
+  id        String  @id @default(cuid())
+  groupId   String
+  coachId   String
+  isPrimary Boolean @default(false)
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  coach Coach @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, coachId])
+  @@map("group_coaches")
+}
+
+// ─── Training ────────────────────────────────────────────
+
+model TrainingSession {
+  id        String                @id @default(cuid())
+  groupId   String
+  coachId   String?
+  title     String?
+  venue     String
+  startTime DateTime
+  endTime   DateTime
+  status    TrainingSessionStatus @default(SCHEDULED)
+  notes     String?
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  group        Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  coach        Coach?       @relation(fields: [coachId], references: [id], onDelete: SetNull)
+  attendances  Attendance[]
+
+  @@index([groupId, startTime])
+  @@index([startTime])
+  @@map("training_sessions")
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  sessionId String
+  childId   String
+  status    AttendanceStatus @default(ABSENT)
+  markedBy  String?
+  markedAt  DateTime?
+  note      String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  session  TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  child    Child           @relation(fields: [childId], references: [id], onDelete: Cascade)
+  marker   User?           @relation("MarkedBy", fields: [markedBy], references: [id], onDelete: SetNull)
+
+  @@unique([sessionId, childId])
+  @@index([childId])
+  @@map("attendances")
+}
+
+// ─── Subscriptions & Payments ────────────────────────────
+
+model SubscriptionPlan {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  price        Decimal  @db.Decimal(10, 2)
+  sessions     Int
+  durationDays Int
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  childId            String
+  planId             String
+  status             SubscriptionStatus @default(ACTIVE)
+  startDate          DateTime
+  endDate            DateTime
+  remainingSessions  Int
+  totalSessions      Int
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  child    Child            @relation(fields: [childId], references: [id], onDelete: Cascade)
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id])
+  payments Payment[]
+
+  @@index([childId, status])
+  @@index([endDate])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  userId         String
+  childId        String?
+  subscriptionId String?
+  amount         Decimal       @db.Decimal(10, 2)
+  currency       String        @default("RUB")
+  status         PaymentStatus @default(PENDING)
+  type           PaymentType
+  externalId     String?
+  description    String?
+  metadata       Json?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  child        Child?        @relation(fields: [childId], references: [id], onDelete: SetNull)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  orderId        String?       @unique
+  order          Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@index([externalId])
+  @@map("payments")
+}
+
+// ─── Matches ─────────────────────────────────────────────
+
+model Match {
+  id         String   @id @default(cuid())
+  title      String
+  opponent   String
+  homeScore  Int      @default(0)
+  awayScore  Int      @default(0)
+  playedAt   DateTime
+  venue      String?
+  groupName  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  events MatchEvent[]
+
+  @@index([playedAt])
+  @@map("matches")
+}
+
+model MatchEvent {
+  id      String         @id @default(cuid())
+  matchId String
+  childId String
+  type    MatchEventType
+  minute  Int?
+  note    String?
+  createdAt DateTime     @default(now())
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+  @@index([childId])
+  @@map("match_events")
+}
+
+// ─── Media ───────────────────────────────────────────────
+
+model MediaAlbum {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  groupId     String?
+  isPublic    Boolean  @default(false)
+  coverUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group Group?  @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  items Media[]
+
+  @@map("media_albums")
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  albumId      String?
+  type         MediaType @default(IMAGE)
+  url          String
+  thumbnailUrl String?
+  title        String?
+  uploadedById String?
+  createdAt    DateTime  @default(now())
+
+  album      MediaAlbum? @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  uploadedBy User?       @relation("UploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  @@index([albumId])
+  @@map("media")
+}
+
+// ─── News & CMS ──────────────────────────────────────────
+
+model News {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  coverImage  String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isPublished, publishedAt])
+  @@map("news")
+}
+
+model SiteSettings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+
+  @@map("site_settings")
+}
+
+// ─── Notifications ─────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType @default(INFO)
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  groupId   String
+  authorId  String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+
+  group  Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id])
+
+  @@index([groupId])
+  @@map("announcements")
+}
+
+// ─── Shop ────────────────────────────────────────────────
+
+model ProductCategory {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@map("product_categories")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  slug        String   @unique
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  imageUrl    String?
+  stock       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category   ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  status      OrderStatus @default(PENDING)
+  totalAmount Decimal     @db.Decimal(10, 2)
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user          User                 @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+  payment       Payment?
+
+  @@index([userId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  productId      String
+  quantity       Int
+  unitPrice      Decimal @db.Decimal(10, 2)
+  size           String?
+  displayName    String?
+  customization  Json?
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_status_history")
+}
+
+// ─── Trial ───────────────────────────────────────────────
+
+model TrialRegistration {
+  id         String                  @id @default(cuid())
+  childName  String
+  parentName String
+  phone      String
+  email      String?
+  birthDate  DateTime?
+  notes      String?
+  status     TrialRegistrationStatus @default(NEW)
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+
+  @@index([status])
+  @@map("trial_registrations")
+}

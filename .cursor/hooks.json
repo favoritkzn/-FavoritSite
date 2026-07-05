@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/db-session-context.sh"
+      },
+      {
+        "command": ".cursor/hooks/docker-session-context.sh"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/guard-destructive-db.sh",
+        "matcher": "migrate reset|db push --force-reset|DROP DATABASE|DROP SCHEMA|TRUNCATE"
+      },
+      {
+        "command": ".cursor/hooks/guard-destructive-docker.sh",
+        "matcher": "docker compose down -v|docker-compose down -v|docker volume rm|docker system prune"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/git-auto-sync.sh"
+      }
+    ]
+  }
+}

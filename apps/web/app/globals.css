@@ -1,0 +1,99 @@
+:root {
+  /* Палитра: белый · красный · чёрный */
+  --color-primary: #E11D2E;
+  --color-primary-hover: #C41928;
+  --color-primary-dark: #9B1420;
+  --color-primary-light: #FEE2E2;
+  --color-primary-subtle: #FFF0F0;
+  --color-primary-glow: rgba(225, 29, 46, 0.1);
+
+  /* Тёплый белый с лёгким красным оттенком */
+  --color-white: #FFFAFA;
+  --color-background: #FFF6F6;
+  --color-surface: #FFFAFA;
+  --color-surface-elevated: #FFFFFF;
+  --color-border: #F0E0E0;
+  --color-border-subtle: #F8EEEE;
+
+  --color-text: #111111;
+  --color-text-secondary: #444444;
+  --color-text-muted: #888888;
+  --color-text-inverse: #FFFFFF;
+
+  --color-dark: #111111;
+  --color-dark-surface: #1A1A1A;
+  --color-dark-border: #2A2A2A;
+
+  --color-success: #16A34A;
+  --color-success-light: #DCFCE7;
+  --color-warning: #E11D2E;
+  --color-warning-light: #FEE2E2;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(225, 29, 46, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.06);
+  --shadow-red: 0 8px 32px rgba(225, 29, 46, 0.18);
+
+  --font-sans: var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --header-height: 72px;
+  --sidebar-width: 272px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #F8F8F8 25%, #EEEEEE 50%, #F8F8F8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}

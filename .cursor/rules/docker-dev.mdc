@@ -1,0 +1,51 @@
+---
+description: Docker local development for PostgreSQL, Redis, MinIO
+globs:
+  - docker/**
+  - scripts/docker*.sh
+  - .env*
+alwaysApply: false
+---
+
+# Docker (ФК «Фаворит»)
+
+## Stack
+
+| Service | Container | Port | Purpose |
+|---------|-----------|------|---------|
+| PostgreSQL 16 | `favorit-postgres` | 5432 | **Primary** Prisma database (required) |
+| Redis 7 | `favorit-redis` | 6379 | Cache (reserved) |
+| MinIO | `favorit-minio` | 9000, 9001 | S3-compatible file storage |
+
+Compose file: `docker/docker-compose.yml`
+
+## Commands
+
+```bash
+bash scripts/docker-up.sh      # smart start (skips Postgres if :5432 busy)
+bash scripts/docker-check.sh   # status
+docker compose -f docker/docker-compose.yml down
+docker compose -f docker/docker-compose.yml logs -f minio
+```
+
+Root `package.json`: `pnpm docker:up`, `pnpm docker:check`, `pnpm docker:down`
+
+## Environment
+
+After `docker:up`, enable uploads:
+
+```env
+S3_ENABLED="true"
+S3_ENDPOINT="http://localhost:9000"
+S3_BUCKET="favorit-media"
+```
+
+Restart API after changing `.env`.
+
+MinIO console: http://localhost:9001 (`minioadmin` / `minioadmin`)
+
+## Notes
+
+- PostgreSQL runs **only in Docker** (`favorit-postgres`). If port 5432 is busy by local Postgres, run `bash scripts/migrate-to-docker-postgres.sh`.
+- Never run `docker compose down -v` without explicit user approval (deletes DB volumes).
+- Skill: `docker-expert` for advanced container work.

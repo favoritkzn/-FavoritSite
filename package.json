@@ -1,0 +1,38 @@
+{
+  "name": "favorit-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Цифровая платформа футбольной академии «Фаворит»",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "db:generate": "pnpm --filter @favorit/database generate",
+    "db:migrate": "pnpm --filter @favorit/database migrate",
+    "db:push": "pnpm --filter @favorit/database push",
+    "db:seed": "pnpm --filter @favorit/database seed",
+    "db:studio": "pnpm --filter @favorit/database studio",
+    "docker:up": "bash scripts/docker-up.sh",
+    "docker:check": "bash scripts/docker-check.sh",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "docker:logs": "docker compose -f docker/docker-compose.yml logs -f",
+    "db:migrate-docker": "bash scripts/migrate-to-docker-postgres.sh",
+    "test:e2e": "node scripts/e2e-full-test.mjs",
+    "test:trial": "node scripts/trial-flow-test.mjs",
+    "dev:up": "bash scripts/dev-up.sh",
+    "git:sync": "bash scripts/git-sync.sh",
+    "github:setup": "bash scripts/github-setup.sh",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

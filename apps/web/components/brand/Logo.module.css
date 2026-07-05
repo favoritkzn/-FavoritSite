@@ -1,0 +1,50 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.markImage {
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+.compact .markImage {
+  height: 40px;
+  width: auto;
+}
+
+.default .markImage {
+  height: 48px;
+  width: auto;
+}
+
+.hero .markImage {
+  height: min(280px, 50vh);
+  width: auto;
+}
+
+.hero {
+  justify-content: center;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.tagline {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}

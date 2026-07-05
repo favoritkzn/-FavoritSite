@@ -1,0 +1,53 @@
+.card {
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.paddingNone {
+  padding: 0;
+}
+
+.paddingSm {
+  padding: 16px;
+}
+
+.paddingMd {
+  padding: 20px;
+}
+
+.paddingLg {
+  padding: 24px;
+}
+
+.hoverable {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.description {
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #F3F4F6;
+}

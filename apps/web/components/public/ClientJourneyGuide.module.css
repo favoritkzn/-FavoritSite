@@ -1,0 +1,83 @@
+.wrap {
+  margin-bottom: 36px;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  color: var(--color-text);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step {
+  position: relative;
+  padding: 18px 18px 18px 52px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-background);
+}
+
+.stepNum {
+  position: absolute;
+  left: 16px;
+  top: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--color-border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.stepActive .stepNum {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.stepDone .stepNum {
+  background: var(--color-success);
+  color: #fff;
+}
+
+.stepTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--color-text);
+}
+
+.stepText {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.stepActive {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-subtle);
+}
+
+.stepDone {
+  border-color: var(--color-success-light);
+}

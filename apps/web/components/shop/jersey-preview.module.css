@@ -1,0 +1,206 @@
+.stage {
+  position: relative;
+  padding: 28px 24px 32px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #eef0f4 0%, #f8f9fb 100%);
+  border: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+}
+
+.stageGlow {
+  display: none;
+}
+
+.viewTabs {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  border: 1px solid var(--color-border-subtle);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.viewTab {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.viewTab:hover {
+  color: var(--color-text);
+}
+
+.viewTabActive {
+  background: var(--color-white);
+  color: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+.jersey {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.jersey :global(.jersey-vector) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.photoFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 445 / 433;
+  overflow: visible;
+  background: transparent;
+}
+
+.photo {
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 10px 22px rgba(15, 23, 42, 0.14));
+}
+
+.pair {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 4px 0;
+}
+
+.pairStacked {
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.pairStacked .side {
+  width: 100%;
+  min-width: 0;
+}
+
+.pairSingle .side {
+  width: 100%;
+  max-width: 480px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.placeholderHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.placeholderHint span {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(238, 240, 244, 0.9);
+  border: 1px dashed rgba(224, 18, 38, 0.35);
+  color: rgba(224, 18, 38, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sideLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.builderLayout {
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 400px);
+  gap: 32px;
+  align-items: start;
+}
+
+.builderPreview {
+  position: sticky;
+  top: 88px;
+}
+
+@media (max-width: 1024px) {
+  .builderLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .builderPreview {
+    position: static;
+    order: -1;
+  }
+
+  .pair {
+    gap: 20px;
+  }
+
+  .side {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage {
+    padding: 16px 12px 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .viewTabs {
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  .viewTab {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  .pair {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewTab {
+    transition: none;
+  }
+}

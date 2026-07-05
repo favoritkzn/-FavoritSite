@@ -1,0 +1,303 @@
+.page {
+  position: relative;
+}
+
+.hero {
+  margin-bottom: 32px;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: var(--color-primary-subtle);
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panelHeader {
+  padding: 20px 24px 0;
+}
+
+.panelTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 4px;
+}
+
+.panelHint {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.panelBody {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stepLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.validation {
+  font-size: 13px;
+  line-height: 1.45;
+  margin: -4px 0 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.validationIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+
+.validationOk {
+  color: var(--color-success, #16a34a);
+}
+
+.validationError {
+  color: var(--color-error, #dc2626);
+}
+
+.validationPending {
+  color: var(--color-text-secondary);
+}
+
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.sizeBtn {
+  padding: 12px 8px;
+  border: 2px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.sizeBtn:hover {
+  border-color: var(--color-primary-light);
+}
+
+.sizeBtnActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.sizeGuide {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.occupiedSection {
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 16px;
+}
+
+.occupiedTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 10px;
+}
+
+.occupiedGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.occupiedChip {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.occupiedChipTaken {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.priceCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary-subtle) 0%, var(--color-background) 100%);
+  border: 1px solid var(--color-primary-light);
+}
+
+.priceLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+}
+
+.priceValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.priceNote {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actionsRow > * {
+  flex: 1;
+  min-width: 120px;
+}
+
+.addedBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  color: var(--color-success, #16a34a);
+  font-size: 14px;
+  font-weight: 600;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.previewModeToggle {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.previewModeBtn {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+  background: var(--color-background);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.previewModeBtnActive {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+@media (max-width: 480px) {
+  .sizeGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .panelHeader,
+  .panelBody {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .addedBanner {
+    animation: none;
+  }
+
+  .sizeBtn {
+    transition: none;
+  }
+}
