@@ -43,7 +43,25 @@ pnpm git:sync
 bash scripts/git-sync.sh "feat: добавил страницу расписания"
 ```
 
-### Перед началом работы (у обоих)
+### Общая база данных (Neon)
+
+В `.env` **у обоих** одинаковый `DATABASE_URL` (строка из Neon, отправить другу в личку):
+
+```env
+DATABASE_URL="postgresql://USER:PASS@HOST/neondb?sslmode=require"
+```
+
+Также скопировать в `packages/database/.env` (тот же URL).
+
+Первый раз (один человек):
+```bash
+pnpm db:generate && pnpm db:push && pnpm db:seed
+```
+
+Второй человек — только `pnpm db:generate`, seed не нужен если данные уже есть.
+
+После смены `.env` перезапустите API: `pnpm dev:up`
+
 ```bash
 git pull
 pnpm install          # если менялись зависимости
